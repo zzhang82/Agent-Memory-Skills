@@ -6,6 +6,14 @@ Write durable rows with `kind="memory"`. The handoff template is the exception: 
 
 Do not put transcripts, secrets, raw diffs, or chain-of-thought into `content`.
 
+## Anti-pollution filter: Structure over prose
+
+Never store mechanical rules that can be enforced by a compiler, linter, type system, or test suite. Before storing a record with `kind="memory"`, ask:
+
+1. *Can a linter catch it?* (Configure ESLint/Biome/Ruff; do not store in AMB)
+2. *Can static types or runtime assertions enforce it?* (Harden TypeScript types or Pydantic validators; do not store in AMB)
+3. *Is it an irreversible architectural decision, domain boundary, or external SDK gotcha?* (Store in AMB with explicit trigger, claim, and rationale)
+
 Suggested tag families, only when they help retrieval:
 
 ```text

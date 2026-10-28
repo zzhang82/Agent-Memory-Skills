@@ -36,6 +36,7 @@ Contract source: Agent Memory Bridge `0.36.0`, schema v12, exactly 17 public MCP
 - Everyday `store`, `recall`, `browse`, feedback, runs, or signals. Use `amb`.
 - Project knowledge, Explore, Inspect, or teaching one decision after the client is already connected. Use `amb`.
 - Replacing an existing production authority, migrating a database, or unbinding a project. Those are separate operator-approved operations.
+- Building secondary wrapper daemons, packet compilers, or caching daemons between the host and AMB. Connect agent hosts directly to AMB via native MCP (stdio or Streamable HTTP).
 
 ## Five stages
 

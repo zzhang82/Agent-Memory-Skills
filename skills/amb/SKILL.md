@@ -38,6 +38,7 @@ Contract baseline: AMB **v0.36.0**, durable schema **v12**, exactly **17** publi
 
 - Ordinary transient questions that will not matter next session.
 - Routine coding where prior memory is not relevant to the change.
+- Mechanical syntax rules, linter errors, or directory layout conventions that can be enforced by AST tools, compilers, or linters. Harden the environment (ESLint, Biome, Ruff, type narrowing, pre-commit checks) instead of writing text to memory.
 - First connection, install, `project init`, doctor, or verify. Route that to `amb-connect`.
 - Tracked episode ledgers and worker handoffs, unless the task explicitly needs them. Those live in [references/advanced_modes.md](references/advanced_modes.md).
 
@@ -86,6 +87,10 @@ Memory is not a substitute for the repo.
 
 Write after the user confirms the fact, or after a gotcha is validated by a failing-then-fixed check.
 
+- Apply the 3-question ingestion filter before storing:
+  1. *Can a linter catch it?* Configure the linter; do not store in AMB.
+  2. *Can static types or runtime assertions enforce it?* Harden types/schemas; do not store in AMB.
+  3. *Only store in AMB* if it is an irreversible architectural decision, domain boundary, or external SDK gotcha.
 - Explicit user intent ("remember that we pin schema v12") may be stored as a decision or constraint.
 - An inferred lesson is a **proposal** until the user confirms it. Say what you would store; do not store it as authority.
 - Use `kind="memory"`. Keep the payload compact. Templates: [references/record_templates.md](references/record_templates.md).
@@ -123,6 +128,7 @@ Full matrix: [references/tool_matrix.md](references/tool_matrix.md).
 
 ## Redlines
 
+- Never treat memory as a prompt trash can for linter errors, syntax reminders, or directory conventions. If an agent makes the same mechanical mistake twice, harden the repository environment with linter rules or types—do not write more text to memory.
 - Never dump conversational transcripts, chat history, hidden reasoning, or secrets into memory.
 - Never treat an unverified inferred lesson as durable authority. Confirm it with the user first.
 - Never silently overwrite contradictory memory. `revise` links the successor to the predecessor. A second `store` of a conflicting claim creates a parallel record.
