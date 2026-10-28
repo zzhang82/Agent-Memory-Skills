@@ -96,6 +96,19 @@ agent> [Loads amb]
 
 ---
 
+## 🛡️ Memory Hygiene: Structure Over Prose
+
+> *If an agent makes the same mistake twice, harden the repository environment—do not write more text to memory.*
+
+A common failure mode is treating memory as a prompt trash can for linter warnings or syntax reminders. Mechanical rules belong in deterministic AST tools (linters, static type narrowing, pre-commit checks) at zero runtime token cost.
+
+Before storing any memory record, apply the **3-Question Ingestion Filter**:
+1. **Can a linter catch it?** Configure ESLint, Biome, or Ruff. Do *not* store in AMB.
+2. **Can static types or runtime assertions enforce it?** Harden TypeScript types or Pydantic models. Do *not* store in AMB.
+3. **Is it an irreversible architectural decision, domain boundary, or external SDK gotcha?** Store in AMB with explicit triggers and rationale.
+
+---
+
 ## 🌐 Broad Host Compatibility
 
 AMB runs over standard MCP. It connects to compatible agent runtimes capable of running MCP stdio or Streamable HTTP meeting its authentication requirements:
