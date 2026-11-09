@@ -1,0 +1,5 @@
+name: amb
+display_name: AMB Everyday Memory
+short_description: Governed project memory retrieval, storage, and revision over AMB.
+description: "Governed project memory retrieval and writeback for any AI coding agent in any harness. Use at task start, on why/history/bug requests, before the first file change, after two failed fixes, before handoffs, and to consolidate at the end of work that changed files (propose only, store after the user confirms)."
+default_prompt: "Use AMB at the trigger moments. Each time: resolve scope, recall in context (<=5), check code vs memory, store only confirmed decisions, correct by superseding with revise."

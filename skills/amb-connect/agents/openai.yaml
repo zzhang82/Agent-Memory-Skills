@@ -1,0 +1,5 @@
+name: amb-connect
+display_name: AMB Connect & Host Integration
+short_description: Connect an agent host to AMB, choose transports, and verify connectivity.
+description: "Use when connecting Agent Memory Bridge (AMB) v0.38 to an agent host, choosing local stdio or remote Streamable HTTP, deploying Docker authority, limiting exposed tools, wiring trigger-moment reminders in any harness, or diagnosing disconnected memory."
+default_prompt: "Follow the 5-stage connection protocol: discover host capabilities, select authority and transport, set tool profile (default Everyday 6), wire optional lifecycle hooks, and verify with doctor and the two-session first win."
