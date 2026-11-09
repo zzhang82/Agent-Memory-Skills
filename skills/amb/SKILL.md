@@ -1,13 +1,15 @@
 ---
 name: amb
 description: >-
-  Explicit, governed project memory retrieval and writeback for any AI coding
-  agent across sessions and tools. Use when the user asks to remember a project
-  decision or rule, recall prior lessons or gotchas, correct outdated memory,
-  inspect memory state, or coordinate durable knowledge across agent sessions.
-  Do not use for ordinary transient questions, routine coding where memory is
-  not relevant, or first-time connection and installation.
-version: 1.0.0
+  Governed project memory retrieval and writeback for any AI coding agent in
+  any harness, across sessions and tools. Use at the start of a task in a
+  project, when a request asks why, refers to earlier work, or reports a bug or
+  failure, before the first file change of a session, after two failed attempts
+  at the same fix, before handing work to another agent, and at the end of work
+  that changed files. Also use when the user asks to remember, recall, correct,
+  or inspect memory. Do not use for one-off questions with no project context,
+  or for first-time connection and installation.
+version: 1.1.0
 tags:
   - memory
   - agent-memory-bridge
@@ -20,14 +22,35 @@ tags:
 
 ## One Cut
 
-Explicit, governed project memory retrieval and writeback for any AI coding agent across sessions and tools.
+Governed project memory retrieval and writeback for any AI coding agent, in any harness, across sessions and tools.
 
 Agent Memory Bridge (AMB) is the durable memory and signal authority. This skill is the everyday procedure for using it. Memory explains **why** a decision, rule, or gotcha exists. Live code, config, and tests show **what** is true now.
 
-Contract baseline: AMB **v0.36.0**, durable schema **v12**, exactly **17** public MCP tools. There is no automatic learning and no 18th tool. Tool names below are the public MCP names (`recall`, `store`, …). Clients may prefix them (`agentMemoryBridge_recall`). The prefix is a client label, not a different tool and not extra authority.
+Contract baseline: AMB **v0.38.4**, durable schema **v12**, exactly **17** public MCP tools. There is no automatic learning and no 18th tool. Tool names below are the public MCP names (`recall`, `store`, …). Clients may prefix them (`agentMemoryBridge_recall`). The prefix is a client label, not a different tool and not extra authority.
+
+## Trigger moments
+
+Memory helps only when the agent consults it at the right time. Waiting for the user to say "remember" or "recall" means it is almost never used. Use AMB at these moments, whatever harness you run in:
+
+| Moment | Action | Write? |
+|---|---|---|
+| Start of a task in a project | One targeted `recall` on the resolved namespace. | No |
+| The request asks why, refers to earlier work ("last time", "we decided", "continue"), or reports a bug, error, or regression | `recall` gotchas and decisions for the named area before answering or editing. | No |
+| First file change of the session, when no recall has happened yet | `recall` on the files or module about to change. | No |
+| Two failed attempts at the same fix | Stop and `recall` gotchas for the symptom before a third attempt. | No |
+| Before handing work to another agent | Pass the namespace and the recalled record ids in the handoff. | No |
+| End of work that changed files | Consolidate: list 0-3 writeback candidates (new decision, validated gotcha, or changed fact to `revise`). | Only after the user confirms |
+
+Rules for these moments:
+
+- Each moment costs one targeted call, not a scan. If a recall comes back empty or irrelevant, say so in one line and continue.
+- The consolidate step proposes. It never stores on its own. See [references/everyday_workflows.md](references/everyday_workflows.md#end-of-work-consolidate).
+- The skill describes how to use memory. The harness decides when the agent is reminded. If the host can run hooks or plugins, wire these moments there with `amb-connect` ([lifecycle_and_hooks.md](../amb-connect/references/lifecycle_and_hooks.md)). If it cannot, put the table above in the host's instruction file (for example `AGENTS.md`).
+- Some hosts load MCP tool schemas lazily. Load the AMB tools once at the first trigger instead of skipping memory because the tool is not loaded yet.
 
 ## When to use
 
+- Any trigger moment above.
 - The user asks to remember a project decision, rule, constraint, or preference.
 - The task depends on prior lessons, gotchas, or domain notes.
 - A stored record is outdated, contradictory, or mis-tagged and must be corrected.
@@ -36,8 +59,8 @@ Contract baseline: AMB **v0.36.0**, durable schema **v12**, exactly **17** publi
 
 ## When NOT to use
 
-- Ordinary transient questions that will not matter next session.
-- Routine coding where prior memory is not relevant to the change.
+- One-off questions with no project context that will not matter next session.
+- Repeated recalls inside one task after the first recall for that area came back empty or irrelevant. Do not re-query the same terms.
 - Mechanical syntax rules, linter errors, or directory layout conventions that can be enforced by AST tools, compilers, or linters. Harden the environment (ESLint, Biome, Ruff, type narrowing, pre-commit checks) instead of writing text to memory.
 - First connection, install, `project init`, doctor, or verify. Route that to `amb-connect`.
 - Tracked episode ledgers and worker handoffs, unless the task explicitly needs them. Those live in [references/advanced_modes.md](references/advanced_modes.md).
@@ -94,6 +117,7 @@ Write after the user confirms the fact, or after a gotcha is validated by a fail
 - Explicit user intent ("remember that we pin schema v12") may be stored as a decision or constraint.
 - An inferred lesson is a **proposal** until the user confirms it. Say what you would store; do not store it as authority.
 - Use `kind="memory"`. Keep the payload compact. Templates: [references/record_templates.md](references/record_templates.md).
+- Write `confidence:` as a bare label (`observed` or `validated`). Put the reason on a separate `evidence:` or `source:` line. Extra text after the label, such as `observed (3 runs)`, is rejected as `invalid_confidence`.
 - Repeated identical `store` calls may deduplicate. If the response is `duplicate_with_new_metadata`, enrich with `annotate`. Do not store a second copy to sneak in a title or tag.
 
 Workflows: [references/everyday_workflows.md](references/everyday_workflows.md).

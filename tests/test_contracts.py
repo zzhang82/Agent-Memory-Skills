@@ -1,5 +1,5 @@
 """
-Tests for technical contracts, 17 MCP tools, profiles, and AMB v0.36 invariants.
+Tests for technical contracts, 17 MCP tools, profiles, and AMB v0.38 invariants.
 """
 
 import unittest

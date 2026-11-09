@@ -68,7 +68,7 @@ That selection is HTTP-only. A failed remote call must not open a local database
 | Remote server agent | Same URL and token as the other clients | Do not create a second home on that server. |
 | Local coding client that can do either transport | Use HTTP only when it should share the remote authority | Do not keep a separate local home for the same project. |
 
-v0.36 has no per-client remote installer. The operator maps this shape onto the host.
+v0.38 has no per-client remote installer. The operator maps this shape onto the host.
 
 ## 4. Checks that are not connection proof
 

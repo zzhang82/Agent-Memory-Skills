@@ -1,6 +1,6 @@
 # AMB tool matrix
 
-Baseline: AMB v0.36.0, schema v12, public MCP surface of exactly 17 tools, in this order:
+Baseline: AMB v0.38.4, schema v12, public MCP surface of exactly 17 tools, in this order:
 
 `store`, `recall`, `browse`, `stats`, `forget`, `feedback`, `promote`, `annotate`, `revise`, `export`, `begin_run`, `record_run_event`, `get_run`, `complete_run`, `claim_signal`, `extend_signal_lease`, `ack_signal`.
 

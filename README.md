@@ -3,7 +3,7 @@
 > **Give any AI coding agent governed project memory across sessions, tools, and machines.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![AMB Compatibility: v0.36.0](https://img.shields.io/badge/AMB_Core-v0.36.0-green.svg)](https://github.com/zzhang82/Agent-Memory-Bridge)
+[![AMB Compatibility: v0.38.4](https://img.shields.io/badge/AMB_Core-v0.38.4-green.svg)](https://github.com/zzhang82/Agent-Memory-Bridge)
 [![Schema: v12](https://img.shields.io/badge/Schema-v12-orange.svg)](https://github.com/zzhang82/Agent-Memory-Bridge)
 [![MCP Tools: 17](https://img.shields.io/badge/MCP_Tools-17-purple.svg)](https://modelcontextprotocol.io)
 
@@ -44,7 +44,7 @@ Connecting a host and using memory day-to-day have fundamentally different lifec
 
 | Skill | Primary Job | Typical Triggers |
 |---|---|---|
-| [`skills/amb`](skills/amb/) | **Everyday Memory** | "Remember that we use WAL mode", "What did we decide about auth?", "That database rule changed; update it." |
+| [`skills/amb`](skills/amb/) | **Everyday Memory** | Start of a task, "why" or "last time" questions, bug reports, the first file change, two failed fixes, handoffs, end-of-work consolidate. Also "Remember that we use WAL mode" and "That database rule changed; update it." |
 | [`skills/amb-connect`](skills/amb-connect/) | **Connection & Integration** | "Connect AMB to OpenCode", "Set up remote HTTP memory on our server", "Why is AMB reporting missing tools?" |
 
 ---

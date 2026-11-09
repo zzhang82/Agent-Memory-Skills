@@ -1,6 +1,6 @@
 # Tool profiles
 
-AMB v0.36 always serves the same 17 public MCP tools on stdio and Streamable HTTP. A profile is a client-side exposure choice. It does not remove tools from the server, create an ACL, or make a bearer token partial.
+AMB v0.38 always serves the same 17 public MCP tools on stdio and Streamable HTTP. A profile is a client-side exposure choice. It does not remove tools from the server, create an ACL, or make a bearer token partial.
 
 If the host cannot filter tools, leave the server unchanged and instruct the agent which profile is in scope. Say clearly that this is guidance, not enforcement.
 

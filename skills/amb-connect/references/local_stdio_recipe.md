@@ -14,7 +14,7 @@ python -c "import os; from pathlib import Path; print((Path('.amb-venv') / ('Scr
 Use the printed interpreter as `<venv-python>`:
 
 ```text
-<venv-python> -m pip install agent-memory-bridge==0.36.0
+<venv-python> -m pip install agent-memory-bridge==0.38.4
 <venv-python> -m agent_mem_bridge doctor
 <venv-python> -m agent_mem_bridge verify
 ```
@@ -60,7 +60,7 @@ These are operator hints, not generated adapters. Confirm the current host docs 
 | Host | Where the operator usually puts a stdio server | Notes |
 |---|---|---|
 | Generic JSON MCP client | `mcpServers.agentMemoryBridge` as above | Match the host's actual key if it differs. |
-| Codex | User or project MCP config under the Codex home, table-shaped rather than JSON | v0.36 does not read or write `~/.codex`. Set `AGENT_MEMORY_BRIDGE_HOME` explicitly if the old database is `~/.codex/mem-bridge`. |
+| Codex | User or project MCP config under the Codex home, table-shaped rather than JSON | v0.38 does not read or write `~/.codex`. Set `AGENT_MEMORY_BRIDGE_HOME` explicitly if the old database is `~/.codex/mem-bridge`. |
 | OpenCode | User or project OpenCode MCP config with `command`, `args`, and `env` | Reload the runtime after editing. |
 | Claude Desktop | The desktop app's MCP server config | Restart the app. Name the server `agentMemoryBridge`. |
 | Cursor | The editor's MCP server config | Restart or reload MCP. Do not use a remote URL for this recipe. |
@@ -75,7 +75,7 @@ docker run --rm -i \
   -e AGENT_MEMORY_BRIDGE_DEFAULT_SOURCE_CLIENT=generic \
   -e AGENT_MEMORY_BRIDGE_DEFAULT_CLIENT_TRANSPORT=stdio \
   -v /absolute/path/to/bridge-home:/data/agent-memory-bridge \
-  ghcr.io/zzhang82/agent-memory-bridge:0.36.0 \
+  ghcr.io/zzhang82/agent-memory-bridge:0.38.4 \
   agent-memory-bridge serve --transport stdio
 ```
 

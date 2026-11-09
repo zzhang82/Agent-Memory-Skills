@@ -1,19 +1,19 @@
 # Docker deployment
 
-Deploy one official AMB 0.36.0 authority with Compose. This is a new authority unless the operator explicitly mounts an existing local home. It is not a migration or a license to replace production.
+Deploy one official AMB 0.38.4 authority with Compose. This is a new authority unless the operator explicitly mounts an existing local home. It is not a migration or a license to replace production.
 
 ## Official shape
 
-The published image is `ghcr.io/zzhang82/agent-memory-bridge:0.36.0`. It runs `agent-memory-bridge serve --transport streamable-http` as UID/GID `10001`, exposes port `8000`, and uses `/readyz` as its health check.
+The published image is `ghcr.io/zzhang82/agent-memory-bridge:0.38.4`. It runs `agent-memory-bridge serve --transport streamable-http` as UID/GID `10001`, exposes port `8000`, and uses `/readyz` as its health check.
 
-Use the v0.36.0 `compose.yml` from the AMB source tag. The operational contract is:
+Use the v0.38.4 `compose.yml` from the AMB source tag. The operational contract is:
 
 ```yaml
 name: agent-memory-bridge
 
 services:
   amb-mcp:
-    image: ghcr.io/zzhang82/agent-memory-bridge:0.36.0
+    image: ghcr.io/zzhang82/agent-memory-bridge:0.38.4
     user: "10001:10001"
     restart: unless-stopped
     read_only: true

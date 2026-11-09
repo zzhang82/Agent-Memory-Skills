@@ -112,6 +112,27 @@ Inspection does not include `export` unless the user wants a portable snapshot. 
 
 If browse shows several records that contradict each other, do not merge them in chat and store a third. Name the ids and correct with `revise`. Procedure: [revision_and_correction.md](revision_and_correction.md).
 
+## End of work: consolidate
+
+Run this once when a piece of work that changed files is done, and the session has not already stored, revised, or annotated anything. It catches decisions and gotchas that would otherwise stay in the chat.
+
+1. Review what changed and what was learned. Keep only items that pass the 3-question ingestion filter in [SKILL.md](../SKILL.md).
+2. List 0-3 candidates. Give each one a type (decision, gotcha, or changed fact), a claim, a trigger, and a proposed namespace.
+3. For a changed fact, name the id of the record it replaces. That candidate becomes a `revise`, not a `store`.
+4. Ask the user which candidates to keep. Store nothing before they answer.
+5. If there are no candidates, say "AMB: nothing to consolidate" in one line and stop.
+
+```text
+Candidates (nothing stored yet):
+1. gotcha  - claim: Shell writes bypass file-write hooks in permissive mode.
+             trigger: write hook did not fire on `echo > file`.
+             namespace: global
+2. revise  - replaces 2026...-abc: test command is now `make check`.
+Keep which? (1, 2, none)
+```
+
+Do not count a long chat as a reason to consolidate. A session with no durable decision has nothing to store.
+
 ## What these workflows do not do
 
 - They do not install AMB or run `project init`.

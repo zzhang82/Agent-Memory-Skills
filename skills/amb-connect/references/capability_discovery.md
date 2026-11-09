@@ -1,6 +1,6 @@
 # Capability discovery
 
-AMB v0.36 is a generic MCP memory service. It does not inspect, configure, or certify Codex, OpenCode, Claude, Cursor, Cline, VS Code, Hermes, Antigravity, bots, or custom agents. Discover the host before choosing a transport.
+AMB v0.38 is a generic MCP memory service. It does not inspect, configure, or certify Codex, OpenCode, Claude, Cursor, Cline, VS Code, Hermes, Antigravity, bots, or custom agents. Discover the host before choosing a transport.
 
 Ask the operator, or inspect the host's own docs and config, for each row. Record `yes`, `no`, or `unknown`. Do not fill unknown cells from an old per-client adapter.
 
@@ -35,7 +35,7 @@ Use these only as discovery questions. They are not certified integrations.
 | Bot or remote agent (Grok bot, Dots, hosted custom agent) | Can it reach the authority only over HTTPS or an authenticated tunnel? Can it set `Authorization`? It usually cannot run a local hook against the operator's checkout. |
 | Custom agent | Does its MCP client implement stdio, Streamable HTTP, or neither? If neither, stop. Do not add a private REST shim. |
 
-Historical per-client notes and the Codex Stop capture trial belong to tag `v0.35.0`. Do not copy those adapters into a v0.36 setup.
+Historical per-client notes and the Codex Stop capture trial belong to tag `v0.35.0`. Do not copy those adapters into a v0.38 setup.
 
 ## Minimum record before continuing
 

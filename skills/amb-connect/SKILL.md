@@ -1,11 +1,11 @@
 ---
 name: amb-connect
-description: Use when connecting Agent Memory Bridge (AMB) v0.36 to an agent host, choosing local stdio or remote Streamable HTTP, deploying the official Docker authority, limiting exposed MCP tools, wiring optional lifecycle hooks, or diagnosing a disconnected memory client. Do not use for ordinary store, recall, or project memory work after the client is already connected.
-version: 1.0.0
+description: Use when connecting Agent Memory Bridge (AMB) v0.38 to an agent host, choosing local stdio or remote Streamable HTTP, deploying the official Docker authority, limiting exposed MCP tools, wiring optional lifecycle hooks or trigger-moment reminders in any harness, or diagnosing a disconnected memory client. Do not use for ordinary store, recall, or project memory work after the client is already connected.
+version: 1.1.0
 metadata:
   skill-type: integration
   authority: agent-memory-bridge
-  amb-version: 0.36.0
+  amb-version: 0.38.4
   schema: v12
   public-mcp-tools: 17
   transports:
@@ -21,7 +21,7 @@ Discover what the agent host can launch, connect it to one existing or newly dep
 
 This skill connects a host. The `amb` skill uses an already connected bridge.
 
-Contract source: Agent Memory Bridge `0.36.0`, schema v12, exactly 17 public MCP tools. `setup` and `config` are gone. Core does not discover, write, or certify Codex, OpenCode, Claude, Cursor, or any other named client.
+Contract source: Agent Memory Bridge `0.38.4`, schema v12, exactly 17 public MCP tools. `setup` and `config` are gone. Core does not discover, write, or certify Codex, OpenCode, Claude, Cursor, or any other named client.
 
 ## When to use
 
@@ -29,7 +29,7 @@ Contract source: Agent Memory Bridge `0.36.0`, schema v12, exactly 17 public MCP
 - An existing local home or remote Streamable HTTP authority should be reused.
 - A new local virtualenv or official Docker authority must be deployed.
 - Tool exposure, approvals, or optional lifecycle hooks need configuration.
-- Memory appears disconnected, a client lists the wrong tools, or a v0.36 home cutover needs diagnosis.
+- Memory appears disconnected, a client lists the wrong tools, or a v0.38 home cutover needs diagnosis.
 
 ## When not to use
 
@@ -77,9 +77,9 @@ Optional. The host launches:
 
 It reads one generic JSON object on stdin. Accepted `kind` values are `session_start`, `task_prompt`, `compaction`, `ignore`, and `capture`.
 
-Task-time recall can use the selected local or remote authority. Write-side `capture` is local-authority only in v0.36. Remote authority produces no candidate and does not fall back to a local database.
+Task-time recall can use the selected local or remote authority. Write-side `capture` is local-authority only in v0.38. Remote authority produces no candidate and does not fall back to a local database.
 
-Details: [lifecycle and hooks](references/lifecycle_and_hooks.md).
+To make an agent use memory at the right time, also wire the `amb` skill's trigger moments as host-side reminders. Details, rules, and host mapping: [lifecycle and hooks](references/lifecycle_and_hooks.md#trigger-moments-and-host-mapping).
 
 ### 5. Verify, then run the two-session first win
 
@@ -96,10 +96,10 @@ Details: [verification and repair](references/verification_and_repair.md).
 - Never silently fall back to a local database when a remote authority URL fails. Fail closed and say AMB was unavailable. An error is not an empty recall.
 - Never invent REST endpoints such as `POST /store`. AMB is JSON-RPC over stdio, or standard MCP Streamable HTTP at `/mcp`. `/healthz` and `/readyz` are process checks only.
 - Never claim a client tool allowlist, instruction, or approval prompt is a server-side security boundary.
-- Never attempt remote write-side capture. v0.36 Core stores a capture candidate only when a local authority is selected.
+- Never attempt remote write-side capture. v0.38 Core stores a capture candidate only when a local authority is selected.
 - Never delete or replace an existing database, run `docker compose down --volumes`, copy over a live home, or unbind a project without explicit operator confirmation.
 - Never store secrets, bearer tokens, or private credentials in AMB.
-- Never claim a named client is certified. v0.36 examples are generic shapes the operator applies.
+- Never claim a named client is certified. v0.38 examples are generic shapes the operator applies.
 
 ## References
 

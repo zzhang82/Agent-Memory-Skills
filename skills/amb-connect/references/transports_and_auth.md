@@ -1,6 +1,6 @@
 # Transports and auth
 
-AMB v0.36 has two transports and one public tool surface. Both serve the same 17 MCP tools. There is no third HTTP API.
+AMB v0.38 has two transports and one public tool surface. Both serve the same 17 MCP tools. There is no third HTTP API.
 
 | Transport | Who speaks | Authority data | When to use |
 |---|---|---|---|
@@ -33,7 +33,7 @@ An explicit `AGENT_MEMORY_BRIDGE_AUTHORITY_URL` selects HTTP on the lifecycle-ho
 | `AGENT_MEMORY_BRIDGE_DEFAULT_CLIENT_TRANSPORT` | Optional provenance label such as `stdio`. |
 | `AGENT_MEMORY_BRIDGE_OPERATING_PROFILE` | `local-single-user` or `hardened-local`. Neither is OAuth or a per-namespace ACL. |
 
-v0.36 does not open `~/.codex/mem-bridge` by itself. To keep using that directory, set `AGENT_MEMORY_BRIDGE_HOME` to it, or stop AMB and copy the directory to the neutral home. AMB does not migrate or delete the old directory.
+v0.38 does not open `~/.codex/mem-bridge` by itself. To keep using that directory, set `AGENT_MEMORY_BRIDGE_HOME` to it, or stop AMB and copy the directory to the neutral home. AMB does not migrate or delete the old directory.
 
 ## Bearer token file
 

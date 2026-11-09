@@ -11,6 +11,11 @@ Durable facts change by succession, not by a quiet overwrite and not by a second
 | A recall result was unhelpful | `feedback` | Shadow event only. The fact is untouched. |
 | Type label should be stronger, content stands | `promote` | Same id, reclassified to `learn`, `gotcha`, or `domain-note`. |
 
+## v0.38 behavior to expect
+
+- Since v0.38.3, default `recall` hides a memory that a current `supersedes` or `contradicts` relation targets. After a `revise`, the old row stops appearing in normal recall. The old row is kept, but MCP `recall` has no switch to show it: `eligibility="historical"` is an internal storage option, not a public tool argument. Keep the predecessor id from your own `revise` call if you need to cite it later.
+- Since v0.38.4, on an HTTP gateway with roles (RBAC), a non-admin caller may `revise` or `annotate` only memories whose stored actor is that caller. A row written by another principal, or with an empty actor, is refused. Ask an admin, or store a new record and name the old id. Local stdio and the single static-token profile are not restricted.
+
 ## Find the predecessor id
 
 1. Recall the narrowest query that should hit the old fact.
@@ -39,7 +44,7 @@ revise(
   id="<predecessor id from recall>",
   title="Public MCP surface stays 17 tools",
   tags=["domain:architecture", "topic:mcp-tools", "component:mcp-boundary"],
-  reason="User pinned the v0.36 surface; older note said 12 tools.",
+  reason="User pinned the v0.38 surface; older note said 12 tools.",
   replacement_content="record_type: decision\nclaim: The public MCP surface stays exactly 17 tools on schema v12.\ntrigger: When proposing a new MCP tool.\nfix_or_decision: Do not add tool 18. Keep extras in the CLI.\nscope: project:demo-app\nconfidence: observed\nsource: user-direction"
 )
 ```

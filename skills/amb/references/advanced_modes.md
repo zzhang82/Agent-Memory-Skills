@@ -4,7 +4,7 @@ Everyday memory does not need these tools. Use them when the user asks for a tra
 
 They do not replace `store` / `recall` / `revise`. A run ledger is not a decision. A signal is not a belief.
 
-Contract baseline: AMB v0.36.0. The server mints run ids and verification receipts. Callers pass handles back. There is no implicit current run.
+Contract baseline: AMB v0.38.4. The server mints run ids and verification receipts. Callers pass handles back. There is no implicit current run.
 
 ## Tracked work (runs)
 

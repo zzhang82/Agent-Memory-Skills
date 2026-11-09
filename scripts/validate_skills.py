@@ -6,8 +6,8 @@ Enforces:
 1. Directory structure and required files
 2. Frontmatter parsing (including single-line and multiline folded descriptions)
 3. Internal markdown relative links validity (including nested badge links, excluding .git directory)
-4. AMB v0.36.0 tool matrix completeness (exactly 17 public MCP tools with unique, non-duplicated headers)
-5. Exact public tool order matches AMB v0.36 (strictly 1 to 17, no 18th tool, no label tampering)
+4. AMB v0.38.4 tool matrix completeness (exactly 17 public MCP tools with unique, non-duplicated headers)
+5. Exact public tool order matches AMB v0.38 (strictly 1 to 17, no 18th tool, no label tampering)
 6. Cross-file Everyday 6 profile equality across:
    - amb/SKILL.md
    - amb/references/tool_matrix.md
@@ -27,7 +27,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# Exact canonical 17 tools order in AMB v0.36.0
+# Exact canonical 17 tools order in AMB v0.38.4
 EXPECTED_17_TOOLS = [
     "store", "recall", "browse", "stats",
     "forget", "feedback", "promote", "annotate", "revise", "export",

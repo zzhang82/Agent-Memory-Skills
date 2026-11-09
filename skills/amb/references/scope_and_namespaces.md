@@ -2,7 +2,7 @@
 
 Every read and write names one namespace. A namespace is a bucket, not a permission grant. Seeing `global` in a tool schema does not authorize writing operating rules there.
 
-AMB v0.36.0 binds a git checkout to exactly one `project:<slug>` through project init. Resolution reads that binding. It does not create one.
+AMB v0.38.4 binds a git checkout to exactly one `project:<slug>` through project init. Resolution reads that binding. It does not create one.
 
 ## Repository-backed projects
 
