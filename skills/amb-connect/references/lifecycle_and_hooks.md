@@ -127,7 +127,7 @@ Hosts expose these events under different names. Use the host's own documentatio
 | Host type | Mechanism | Notes |
 |---|---|---|
 | CLI agents with a hook config (for example Claude Code) | Command hooks on session start, prompt submit, pre-tool, and stop events | Claude Code example, checked on 2026-11-09: `SessionStart`, `UserPromptSubmit`, `PreToolUse` (match the edit tools and the shell tool), `Stop`. Context is returned as `hookSpecificOutput.additionalContext`. A one-time stop block is returned as `{"decision":"block","reason":...}`. |
-| IDE agents with a hooks file | Hook entries for prompt submit and before file edit or shell run | Check which events can add context and which can only allow or deny. |
+| IDE agents with a hooks file (for example Cursor and its CLI agent) | Hook entries for session start, prompt submit, after tool use, and stop | Cursor example, checked against Cursor docs on 2026-11-09: `beforeSubmitPrompt` can only allow or block, and `preToolUse` can only allow or deny, so neither can add context. Add context at `sessionStart` and `postToolUse` with `additional_context`. Record prompt intent at submit and remind on the next `postToolUse`. Give the first-write reminder after the first write. For the end-of-work pass, return `followup_message` from `stop` and set `loop_limit: 1`. The CLI agent reads the same user-level `~/.cursor/hooks.json`. |
 | Agents with a plugin API | Plugin event handlers | Same events, same reminder rules. |
 | Hosts with no hook support | The instruction file the host always loads (for example `AGENTS.md`) | Copy the trigger table from the `amb` skill. This is weaker: the agent must remember it unaided. |
 
