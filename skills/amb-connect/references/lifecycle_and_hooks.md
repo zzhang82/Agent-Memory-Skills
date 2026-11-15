@@ -1,14 +1,27 @@
 # Lifecycle and hooks
 
-Lifecycle is optional. A connected MCP client does not need it. v0.38 supplies one host-neutral command and does not ship client plugins or hook manifests.
+Lifecycle and trigger reminders are optional. A connected MCP client does not need them. In v0.39, AMB supplies two distinct layers:
+
+1. **Packaged per-client trigger reminders (`triggers` and `trigger-hook`)** for `claude-code`, `cursor`, `codex`, `cline`, and `vscode` across an explicit 6×5 capability matrix. For the four hook-capable clients (`claude-code`, `cursor`, `codex`, `vscode`), `trigger-hook --client <client>` translates host-specific hook payloads (`hook_event_name`, `tool_name`, `stop_hook_active`, `loop_count`) outside `lifecycle-hook` into each host's exact reminder envelope. `cline` installs managed instruction files only and has no `trigger-hook` runtime envelope.
+2. **Host-neutral lifecycle activation (`lifecycle-hook`)** for generic custom harnesses that pipe host-neutral JSON (`kind` in `session_start`, `task_prompt`, `compaction`, `ignore`, `capture`).
 
 ```bash
+# Packaged per-client triggers (v0.39.0; preview with --dry-run before writing)
+<venv-python> -m agent_mem_bridge triggers matrix
+<venv-python> -m agent_mem_bridge triggers install <claude-code|cursor|codex|cline|vscode> --dry-run
+<venv-python> -m agent_mem_bridge triggers install <claude-code|cursor|codex|cline|vscode>
+<venv-python> -m agent_mem_bridge triggers test <client>
+<venv-python> -m agent_mem_bridge trigger-hook --client <claude-code|cursor|codex|vscode>
+
+# Host-neutral generic lifecycle hook
 <venv-python> -m agent_mem_bridge lifecycle-hook
 ```
 
-The process reads one JSON object from stdin and writes one JSON object to stdout. Empty, invalid, or non-object input returns `{"decision":"ignore","context":""}`.
+In `v0.39.0`, a bare `triggers install <client>` writes immediately (`--yes` is accepted for CLI compatibility, not a confirmation gate). Always preview with `--dry-run` first.
 
-The host must translate its own event into this generic object. Vendor keys make the event `ignore`: `hook_event_name`, `event`, `host`, `last_assistant_message`, `transcript_path`, and `hookSpecificOutput`. Core does not read transcripts or certify the host.
+For `lifecycle-hook`, the process reads one generic JSON object from stdin and writes one JSON object to stdout. Empty, invalid, or non-object input returns `{"decision":"ignore","context":""}`.
+
+The host must translate its own event into this generic object when calling `lifecycle-hook`. Vendor keys make `lifecycle-hook` return `ignore`: `hook_event_name`, `event`, `host`, `last_assistant_message`, `transcript_path`, and `hookSpecificOutput`. Never pipe raw Claude Code, Cursor, or Codex hook payloads into `lifecycle-hook`; use `trigger-hook --client <client>` for those hosts.
 
 ## Accepted input
 
@@ -120,15 +133,17 @@ These rules keep reminders useful in any host:
 - **Watch shell writes.** In permissive modes agents often write files through the shell (`echo >`, heredocs, `sed -i`). A write reminder that matches only file-edit tools misses them. Matching shell commands needs a heuristic, and it will misfire (for example a heredoc piped into an interpreter). Treat write counts as approximate.
 - **Say when AMB is down.** A failed recall is "AMB unavailable", not "no matching memory".
 
-### Host mechanisms
+### Host mechanisms and the v0.39 6×5 capability matrix
 
-Hosts expose these events under different names. Use the host's own documentation for exact names and output formats. The rows below are a starting point, not certification.
+In v0.39, `agent-memory-bridge triggers matrix` reports each of the 30 cells (`6 moments × 5 clients`) as `native_hook`, `deferred_hook`, `trust_gated_hook`, or `instruction_rule`:
 
-| Host type | Mechanism | Notes |
+| Client | Mechanism installed by `triggers install <client>` | Matrix breakdown across the 6 moments |
 |---|---|---|
-| CLI agents with a hook config (for example Claude Code) | Command hooks on session start, prompt submit, pre-tool, and stop events | Claude Code example, checked on 2026-11-09: `SessionStart`, `UserPromptSubmit`, `PreToolUse` (match the edit tools and the shell tool), `Stop`. Context is returned as `hookSpecificOutput.additionalContext`. A one-time stop block is returned as `{"decision":"block","reason":...}`. |
-| IDE agents with a hooks file (for example Cursor and its CLI agent) | Hook entries for session start, prompt submit, after tool use, and stop | Cursor example, checked against Cursor docs on 2026-11-09: `beforeSubmitPrompt` can only allow or block, and `preToolUse` can only allow or deny, so neither can add context. Add context at `sessionStart` and `postToolUse` with `additional_context`. Record prompt intent at submit and remind on the next `postToolUse`. Give the first-write reminder after the first write. For the end-of-work pass, return `followup_message` from `stop` and set `loop_limit: 1`. The CLI agent reads the same user-level `~/.cursor/hooks.json`. |
-| Agents with a plugin API | Plugin event handlers | Same events, same reminder rules. |
-| Hosts with no hook support | The instruction file the host always loads (for example `AGENTS.md`) | Copy the trigger table from the `amb` skill. This is weaker: the agent must remember it unaided. |
+| `claude-code` | `.claude/settings.json` command hooks (`trigger-hook --client claude-code`) | All 6 moments are `native_hook`: `SessionStart`, `UserPromptSubmit`, `PreToolUse` (`Edit\|Write\|NotebookEdit\|MultiEdit\|Bash` and `Task\|Agent`), `PostToolUseFailure` (2x executed-error counter ignoring interrupts, permission denials, and empty errors), and `Stop` (one-time `{"decision":"block","reason":...}` when `not stop_hook_active`). Context is returned as `hookSpecificOutput.additionalContext`. |
+| `cursor` | `.cursor/hooks.json` (`"version": 1`, `trigger-hook --client cursor`) | `session_start`, `first_write` (`postToolUse`), `repeated_failure` (`postToolUseFailure` 2x counter ignoring `permission_denied`), and `session_stop` (`stop` `followup_message` with `loop_limit: 1` and `loop_count == 0`) are `native_hook`. `prompt_intent` is `deferred_hook` (`beforeSubmitPrompt` records intent and returns `{"continue": true}`; next `postToolUse` injects `additional_context`). `subagent_handoff` is labeled `instruction_rule` (`subagentStart` is allow/deny only), but note the mechanism difference: `triggers install cursor` writes only `.cursor/hooks.json` (no markdown file) and injects the handoff rule inside the `sessionStart` hook's `additional_context` payload. If the `sessionStart` hook is disabled, that rule disappears unless also added to `AGENTS.md` or `.cursor/rules`. |
+| `codex` | `.codex/hooks.json` + managed block in `AGENTS.md` | `session_start`, `prompt_intent`, and `session_stop` are `trust_gated_hook` (require `[features].hooks != false` in `config.toml` and interactive `/hooks` trust). `first_write`, `repeated_failure`, and `subagent_handoff` are `instruction_rule` in `AGENTS.md`. |
+| `vscode` | `.github/hooks/amb-triggers.json` (`$COPILOT_HOME/hooks/amb-triggers.json` for user scope) + `.github/copilot-instructions.md` | `session_start`, `first_write` (`preToolUse`, always exits `0`), `repeated_failure` (`postToolUse` 2x counter), `subagent_handoff` (`subagentStart`), and `session_stop` (`agentStop`) are `native_hook` returning `additionalContext`. `prompt_intent` is `deferred_hook` (`userPromptSubmitted` ignores stdout -> flags state and injects `additionalContext` on next tool event). |
+| `cline` | `.clinerules/amb-triggers.md` and `.cline/rules/amb-triggers.md` (user scope: `~/Documents/Cline/Rules/`, `~/.cline/rules/`, `~/Cline/Rules/`) | All 6 moments are `instruction_rule`. No native command hooks are claimed. |
+| Other hosts with no hook support | The instruction file the host always loads (for example `AGENTS.md`) | Copy the trigger table from the `amb` skill. This is weaker: the agent must remember it unaided. |
 
-Prove a wiring with a fresh session, not by reading the config. Start a new session, make one change in a project folder, and confirm the reminder text reached the agent.
+Prove a wiring with `agent-memory-bridge triggers test <client>` (synthetic self-test) and a fresh live session. Start a new session, make one change in a project folder, and confirm the reminder text reached the agent.

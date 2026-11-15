@@ -9,7 +9,7 @@ description: >-
   that changed files. Also use when the user asks to remember, recall, correct,
   or inspect memory. Do not use for one-off questions with no project context,
   or for first-time connection and installation.
-version: 1.1.0
+version: 1.2.0
 tags:
   - memory
   - agent-memory-bridge
@@ -26,7 +26,7 @@ Governed project memory retrieval and writeback for any AI coding agent, in any 
 
 Agent Memory Bridge (AMB) is the durable memory and signal authority. This skill is the everyday procedure for using it. Memory explains **why** a decision, rule, or gotcha exists. Live code, config, and tests show **what** is true now.
 
-Contract baseline: AMB **v0.38.4**, durable schema **v12**, exactly **17** public MCP tools. There is no automatic learning and no 18th tool. Tool names below are the public MCP names (`recall`, `store`, …). Clients may prefix them (`agentMemoryBridge_recall`). The prefix is a client label, not a different tool and not extra authority.
+Contract baseline: AMB **v0.39.0**, durable schema **v12**, exactly **17** public MCP tools. There is no automatic learning and no 18th tool. Tool names below are the public MCP names (`recall`, `store`, …). Clients may prefix them (`agentMemoryBridge_recall`). The prefix is a client label, not a different tool and not extra authority. Plain-words feature names used in README, Explore, Inspect, and CLI help map to exact code and wire identifiers in AMB's `docs/GLOSSARY.md`.
 
 ## Trigger moments
 
@@ -45,7 +45,7 @@ Rules for these moments:
 
 - Each moment costs one targeted call, not a scan. If a recall comes back empty or irrelevant, say so in one line and continue.
 - The consolidate step proposes. It never stores on its own. See [references/everyday_workflows.md](references/everyday_workflows.md#end-of-work-consolidate).
-- The skill describes how to use memory. The harness decides when the agent is reminded. If the host can run hooks or plugins, wire these moments there with `amb-connect` ([lifecycle_and_hooks.md](../amb-connect/references/lifecycle_and_hooks.md)). If it cannot, put the table above in the host's instruction file (for example `AGENTS.md`).
+- The skill describes how to use memory. The harness decides when the agent is reminded. For Claude Code, Cursor, Codex, Cline, and VS Code, install AMB v0.39's packaged triggers (`agent-memory-bridge triggers install <client>`) and inspect the 6×5 capability matrix (`agent-memory-bridge triggers matrix`) via `amb-connect` ([lifecycle_and_hooks.md](../amb-connect/references/lifecycle_and_hooks.md)). For other hosts, wire `lifecycle-hook` or put the table above in the host's instruction file (for example `AGENTS.md`).
 - Some hosts load MCP tool schemas lazily. Load the AMB tools once at the first trigger instead of skipping memory because the tool is not loaded yet.
 
 ## When to use

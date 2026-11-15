@@ -68,7 +68,7 @@ That selection is HTTP-only. A failed remote call must not open a local database
 | Remote server agent | Same URL and token as the other clients | Do not create a second home on that server. |
 | Local coding client that can do either transport | Use HTTP only when it should share the remote authority | Do not keep a separate local home for the same project. |
 
-v0.38 has no per-client remote installer. The operator maps this shape onto the host.
+For `claude-code`, `cursor`, `codex`, `cline`, and `vscode`, preview first with `agent-memory-bridge connect <client> --url https://amb.example.test/mcp --token-file /private/amb/http-token --dry-run`, then run without `--dry-run` to write the HTTP entry directly (use `--force` when replacing an existing stdio entry). For other hosts, the operator maps the generic shape above onto the host.
 
 ## 4. Checks that are not connection proof
 

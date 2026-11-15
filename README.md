@@ -3,7 +3,7 @@
 > **Give any AI coding agent governed project memory across sessions, tools, and machines.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![AMB Compatibility: v0.38.4](https://img.shields.io/badge/AMB_Core-v0.38.4-green.svg)](https://github.com/zzhang82/Agent-Memory-Bridge)
+[![AMB Compatibility: v0.39.0](https://img.shields.io/badge/AMB_Core-v0.39.0-green.svg)](https://github.com/zzhang82/Agent-Memory-Bridge)
 [![Schema: v12](https://img.shields.io/badge/Schema-v12-orange.svg)](https://github.com/zzhang82/Agent-Memory-Bridge)
 [![MCP Tools: 17](https://img.shields.io/badge/MCP_Tools-17-purple.svg)](https://modelcontextprotocol.io)
 

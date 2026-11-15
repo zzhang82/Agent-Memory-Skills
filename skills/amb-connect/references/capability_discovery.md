@@ -1,6 +1,6 @@
 # Capability discovery
 
-AMB v0.38 is a generic MCP memory service. It does not inspect, configure, or certify Codex, OpenCode, Claude, Cursor, Cline, VS Code, Hermes, Antigravity, bots, or custom agents. Discover the host before choosing a transport.
+AMB v0.39 is an MCP memory service that ships verified connectors and a 6×5 trigger matrix for five clients (`claude-code`, `cursor`, `codex`, `cline`, `vscode`) and supports generic stdio or Streamable HTTP MCP for any other host (OpenCode, Claude Desktop, Hermes, Antigravity, bots, or custom agents). Discover the host before choosing a transport.
 
 Ask the operator, or inspect the host's own docs and config, for each row. Record `yes`, `no`, or `unknown`. Do not fill unknown cells from an old per-client adapter.
 
@@ -17,10 +17,10 @@ Ask the operator, or inspect the host's own docs and config, for each row. Recor
 
 ## How to detect without pretending Core knows the host
 
-1. Find the host's MCP settings. Names vary: `mcpServers`, `mcp_servers`, plugin config, or a bot runtime form. The host owns that file. AMB does not write it.
-2. Test subprocess support with a harmless command before installing, or read the host's MCP docs for "stdio" or "local command".
+1. Find the host's MCP settings. For `claude-code`, `cursor`, `codex`, `cline`, and `vscode`, `agent-memory-bridge connect <client> --dry-run` previews the exact native config merge (`mcpServers`, VS Code `servers`, or Codex `[mcp_servers.agent-memory-bridge]`). For other hosts, inspect the host's own MCP config format.
+2. Test subprocess support with `connect <client> --check` (for supported clients) or read the host's MCP docs for "stdio" or "local command".
 3. Test HTTP support by looking for a URL field plus custom headers. SSE-only or legacy HTTP clients are not automatically Streamable HTTP clients.
-4. Test hooks by finding an event runner that can execute `<venv-python> -m agent_mem_bridge lifecycle-hook` and pipe JSON to stdin. A webhook that expects `POST /store` is not a hook.
+4. Test hooks by checking `agent-memory-bridge triggers matrix` (for the 5 supported clients) or finding an event runner that can execute `<venv-python> -m agent_mem_bridge lifecycle-hook` and pipe JSON to stdin. A webhook that expects `POST /store` is not a hook.
 5. Test filtering by finding an allowlist, enabled-tools list, or approval policy. If none exists, say so.
 6. Test checkout locality with the host's working directory. A bot running on another machine does not have the operator's laptop checkout.
 
@@ -35,7 +35,7 @@ Use these only as discovery questions. They are not certified integrations.
 | Bot or remote agent (Grok bot, Dots, hosted custom agent) | Can it reach the authority only over HTTPS or an authenticated tunnel? Can it set `Authorization`? It usually cannot run a local hook against the operator's checkout. |
 | Custom agent | Does its MCP client implement stdio, Streamable HTTP, or neither? If neither, stop. Do not add a private REST shim. |
 
-Historical per-client notes and the Codex Stop capture trial belong to tag `v0.35.0`. Do not copy those adapters into a v0.38 setup.
+Historical v0.35 adapters and the Codex Stop capture trial belong to tag `v0.35.0`. Use `v0.39.0`'s `connect` and `triggers` CLI commands for the 5 supported clients rather than copying v0.35 files.
 
 ## Minimum record before continuing
 

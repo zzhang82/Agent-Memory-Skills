@@ -1,5 +1,5 @@
 """
-Tests for technical contracts, 17 MCP tools, profiles, and AMB v0.38 invariants.
+Tests for technical contracts, 17 MCP tools, profiles, and AMB v0.39.0 invariants.
 """
 
 import unittest
@@ -103,6 +103,48 @@ class TestContracts(unittest.TestCase):
         self.assertIn("Streamable HTTP", transports_doc)
         self.assertIn("AGENT_MEMORY_BRIDGE_HOME", transports_doc)
         self.assertIn("AGENT_MEMORY_BRIDGE_HTTP_TOKEN_FILE", transports_doc)
+
+    def test_v039_connectors_and_triggers_documented(self):
+        connect_skill = (self.skills_dir / "amb-connect" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("amb-version: 0.39.0", connect_skill)
+        self.assertIn("tier1_config_valid", connect_skill)
+        self.assertIn("tier2_server_spawn_verified", connect_skill)
+        self.assertIn("tier3_host_registration_status", connect_skill)
+        self.assertIn("not_checked", connect_skill)
+        self.assertIn("host_reload_required", connect_skill)
+        self.assertIn("host_cli_verified", connect_skill)
+        self.assertIn("not a confirmation gate", connect_skill)
+        self.assertIn("temporary workspace", connect_skill)
+        self.assertIn("triggers matrix", connect_skill)
+
+        stdio_doc = (self.skills_dir / "amb-connect" / "references" / "local_stdio_recipe.md").read_text(encoding="utf-8")
+        self.assertIn("not a confirmation gate", stdio_doc)
+        self.assertNotIn("connect claude-code --yes", stdio_doc)
+
+        vr_doc = (self.skills_dir / "amb-connect" / "references" / "verification_and_repair.md").read_text(encoding="utf-8")
+        for status_val in ("not_checked", "host_reload_required", "host_cli_verified"):
+            self.assertIn(f"`{status_val}`", vr_doc)
+        self.assertIn("synthetic two-process round-trip test", vr_doc)
+
+        hooks_doc = (self.skills_dir / "amb-connect" / "references" / "lifecycle_and_hooks.md").read_text(encoding="utf-8")
+        for level in ("native_hook", "deferred_hook", "trust_gated_hook", "instruction_rule"):
+            self.assertIn(level, hooks_doc)
+        expected_row_phrases = {
+            "claude-code": ("All 6 moments are `native_hook`", "hookSpecificOutput.additionalContext"),
+            "cursor": ("`prompt_intent` is `deferred_hook`", "`subagent_handoff` is labeled `instruction_rule`", "writes only `.cursor/hooks.json` (no markdown file)"),
+            "codex": ("`session_start`, `prompt_intent`, and `session_stop` are `trust_gated_hook`", "`first_write`, `repeated_failure`, and `subagent_handoff` are `instruction_rule`"),
+            "vscode": ("`prompt_intent` is `deferred_hook`", "returning `additionalContext`"),
+            "cline": ("All 6 moments are `instruction_rule`", "No native command hooks are claimed"),
+        }
+        for client, phrases in expected_row_phrases.items():
+            row_match = re.search(rf"^\|\s*`{re.escape(client)}`\s*\|.*$", hooks_doc, re.MULTILINE)
+            self.assertIsNotNone(row_match, f"Missing table row for {client}")
+            assert row_match is not None
+            for phrase in phrases:
+                self.assertIn(phrase, row_match.group(0))
+        self.assertIn("`cline` installs managed instruction files only and has no `trigger-hook` runtime envelope", hooks_doc)
+        self.assertIn("connect <client> --dry-run", connect_skill)
+        self.assertIn("`connect <client> --check` is read-only and does not write", connect_skill)
 
 if __name__ == "__main__":
     unittest.main()

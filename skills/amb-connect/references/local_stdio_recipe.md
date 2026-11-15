@@ -1,6 +1,6 @@
 # Local stdio recipe
 
-Use this when the host can launch a local process. AMB does not write the host config. Show the snippet, confirm the target file, then let the operator apply it.
+Use this when the host can launch a local process. For `claude-code`, `cursor`, `codex`, `cline`, and `vscode`, always preview first with `agent-memory-bridge connect <client> --dry-run` before running `agent-memory-bridge connect <client>` to write (in `v0.39.0`, omitting `--dry-run` writes immediately; `--yes` is accepted for CLI compatibility but is not a confirmation gate). For other hosts, show the generic snippet, confirm the target file, and let the operator apply it.
 
 ## 1. Install into an isolated virtualenv
 
@@ -14,7 +14,7 @@ python -c "import os; from pathlib import Path; print((Path('.amb-venv') / ('Scr
 Use the printed interpreter as `<venv-python>`:
 
 ```text
-<venv-python> -m pip install agent-memory-bridge==0.38.4
+<venv-python> -m pip install agent-memory-bridge==0.39.0
 <venv-python> -m agent_mem_bridge doctor
 <venv-python> -m agent_mem_bridge verify
 ```
@@ -53,19 +53,30 @@ No-argument `-m agent_mem_bridge` is stdio. Do not add HTTP flags to this comman
 
 If the host calls the console script directly, the equivalent command is `agent-memory-bridge` with no arguments, using the same environment.
 
-## 4. Host-specific places to look
+## 4. One-command connectors (`v0.39.0`) and other hosts
 
-These are operator hints, not generated adapters. Confirm the current host docs before editing.
+For the five supported clients, preview first with `--dry-run`, then run `connect` to merge the `agent-memory-bridge` entry (with `.amb-backup.bak` backup and automatic rollback) and run the 3-tier connection check:
 
-| Host | Where the operator usually puts a stdio server | Notes |
+```bash
+<venv-python> -m agent_mem_bridge connect claude-code --dry-run
+<venv-python> -m agent_mem_bridge connect claude-code
+<venv-python> -m agent_mem_bridge connect cursor
+<venv-python> -m agent_mem_bridge connect codex
+<venv-python> -m agent_mem_bridge connect cline --scope user
+<venv-python> -m agent_mem_bridge connect vscode
+<venv-python> -m agent_mem_bridge connect cursor --check
+```
+
+| Host | Config path / mechanism | Notes |
 |---|---|---|
-| Generic JSON MCP client | `mcpServers.agentMemoryBridge` as above | Match the host's actual key if it differs. |
-| Codex | User or project MCP config under the Codex home, table-shaped rather than JSON | v0.38 does not read or write `~/.codex`. Set `AGENT_MEMORY_BRIDGE_HOME` explicitly if the old database is `~/.codex/mem-bridge`. |
-| OpenCode | User or project OpenCode MCP config with `command`, `args`, and `env` | Reload the runtime after editing. |
-| Claude Desktop | The desktop app's MCP server config | Restart the app. Name the server `agentMemoryBridge`. |
-| Cursor | The editor's MCP server config | Restart or reload MCP. Do not use a remote URL for this recipe. |
+| `claude-code` | `.mcp.json` (project) or `~/.claude.json` (user), `mcpServers.agent-memory-bridge` | Includes `"type": "stdio"` and `-I -m agent_mem_bridge`. |
+| `cursor` | `.cursor/mcp.json` or `~/.cursor/mcp.json`, `mcpServers.agent-memory-bridge` | Preserves sibling servers (`playwright`, etc.). Protects existing HTTP entries unless `--force` is passed. |
+| `codex` | `.codex/config.toml` or `~/.codex/config.toml`, `[mcp_servers.agent-memory-bridge]` | Targeted TOML section merge preserving `[features]` and other tables. Set `AGENT_MEMORY_BRIDGE_HOME` explicitly if the old database is `~/.codex/mem-bridge`. |
+| `cline` | `--scope user` (`$CLINE_MCP_SETTINGS_PATH`, `~/.cline/data/settings/cline_mcp_settings.json`, or VS Code `globalStorage`) or `--config-path` | Sets `disabled: false` and `autoApprove: []`. Rejects project scope without `--config-path`. |
+| `vscode` | `.vscode/mcp.json` (`servers`, `--vscode-format servers`) or Copilot `.mcp.json` / `~/.copilot/mcp-config.json` (`mcpServers`, `--vscode-format copilot`) | Includes `"type": "stdio"`. Rejects relative commands and unexpanded `${workspaceFolder}`. |
+| OpenCode / Claude Desktop / Generic | Manual JSON config using section 3 above | Reload or restart the host after editing. |
 
-Do not claim any of these clients has been certified by installing the package.
+Do not claim a GUI IDE has reloaded its config until `tier3_host_registration_status` is `host_cli_verified` or the reloaded host lists `store` and `recall`.
 
 ## 5. Dockerized stdio, only if the host runs Docker locally
 
@@ -75,7 +86,7 @@ docker run --rm -i \
   -e AGENT_MEMORY_BRIDGE_DEFAULT_SOURCE_CLIENT=generic \
   -e AGENT_MEMORY_BRIDGE_DEFAULT_CLIENT_TRANSPORT=stdio \
   -v /absolute/path/to/bridge-home:/data/agent-memory-bridge \
-  ghcr.io/zzhang82/agent-memory-bridge:0.38.4 \
+  ghcr.io/zzhang82/agent-memory-bridge:0.39.0 \
   agent-memory-bridge serve --transport stdio
 ```
 
